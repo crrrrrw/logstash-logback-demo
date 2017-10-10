@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="startQuartz" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+               <ref bean="logPrintJobTrigger" />
+            </list>
+		</property>
+	</bean>
+
+	<!-- scheduld  bean -->
+	<bean id="logPrintService" class="com.crw.elk.service.LogPrintService" />
+	<!-- jobDetail -->
+	<bean id="logPrintJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="logPrintService" />
+		<property name="targetMethod" value="printLog" />
+	</bean>
+	<!-- trigger -->
+	<bean id ="logPrintJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="logPrintJobDetail" />
+		<property name="cronExpression" value="0/5 0/1 * * * ? " /><!-- 每5秒执行一次 -->
+	</bean>
+
+</beans>
